@@ -44,3 +44,6 @@ docs/_build
 
 # Emacs
 *~
+
+# Notebooks
+.ipynb_checkpoints
