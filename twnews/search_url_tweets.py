@@ -24,7 +24,7 @@ from .balance import load_balance_scores
 
 
 def search_for_tweets(scores, fname=__data__ + '/tweets.json'):
-    out = codecs.open(fname, 'w', 'utf-8')
+    out = codecs.open(fname, 'a', 'utf-8')
     twapi = twutil.api.twapi
     while True:
         for url, score in scores.iteritems():
