@@ -79,9 +79,22 @@ To collect similar such tweets, we iteratively submit each URL as a search
 query, storing up to 100 results per query. We loop infinitely, sleeping when we
 hit the Twitter rate limit.
 
-To launch the collection script, run:
+To launch the collection script, you'll need to first set environmental
+variables for your Twitter OAuth credentials. In a bash environment, this would
+be like:
+
+```bash
+export TW_CONSUMER_KEY=aaa
+export TW_CONSUMER_SECRET=bbb
+export TW_ACCESS_TOKEN=ccc
+export TW_ACCESS_TOKEN_SECRET=ddd
+```
+
+Then, you can run:
 
 `python -u -m twnews.search_url_tweets`
+
+(If you haven't installed `twutil`, do so with `pip install twutil`).
 
 In order to make our results reproducible, we will provide a list of tweet IDs
 included in our study, which one can then use the Twitter API to download.
@@ -90,6 +103,3 @@ included in our study, which one can then use the Twitter API to download.
 organization (e.g., `SeriouslyOMGWTF` is the top user tweeting links to
 <http://seriouslyomg.com>). We can filter these by removing the top *k* most
 popular screen names per URL.
-
-
-    
