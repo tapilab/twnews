@@ -12,5 +12,5 @@ python setup.py install
 
 ## Data
 
-- We use a ranking of news sources by political bias: <http://balancestudy.org>
+See [this notebook](notebooks/data.md) for data collection and filtering.
 
