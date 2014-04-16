@@ -27,7 +27,6 @@ from .balance import load_balance_scores
 
 
 def do_search(twapi, qu, url, score, count=100, result_type='recent'):
-    global results
     domain = url[7:]
     while True:
         try:
