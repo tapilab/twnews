@@ -103,3 +103,23 @@ included in our study, which one can then use the Twitter API to download.
 organization (e.g., `SeriouslyOMGWTF` is the top user tweeting links to
 <http://seriouslyomg.com>). We can filter these by removing the top *k* most
 popular screen names per URL.
+
+### Data statistics
+
+We can print out some statistics of the tweets collected from the method above
+like so:
+
+`python -m twnews.tweet_stats`
+
+```
+                  # urls: 3407
+                # tweets: 293892
+                 # users: 131389
+        # url-user pairs: 180101
+       # users w/1 tweet: 105116
+        # liberal tweets: 259120
+   # conservative tweets: 34290
+          avg. url score: 0.194
+```
+
+(These stats are from about 12 hours of collection.)
