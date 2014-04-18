@@ -13,6 +13,16 @@ from . import __data__
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
 
+def average_distance(scores):
+    total = 0.
+    count = 0.
+    for i, si in enumerate(scores):
+        for sj in scores[i + 1:]:
+            total += abs(si - sj)
+            count += 1.
+    return total / count
+
+
 def print_urls_by_user(tweets_file=__data__ + '/tweets.json'):
     user2urls = defaultdict(lambda: set())
     url2score = defaultdict(lambda: 0.)
@@ -24,7 +34,8 @@ def print_urls_by_user(tweets_file=__data__ + '/tweets.json'):
             url2score[js['url_query']] = float(js['url_score'])
     for user, urls in user2urls.iteritems():
         if len(urls) > 1:
-            print user + '\t' + '\t'.join('%s\t%.3f' % (u, url2score[u]) for u in urls)
+            dist = average_distance([url2score[u] for u in urls])
+            print '%s\t%.4f\t%s' % (user, dist, '\t'.join('%s\t%.3f' % (u, url2score[u]) for u in urls))
 
 
 if __name__ == '__main__':
