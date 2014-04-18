@@ -30,6 +30,7 @@ def do_search(twapi, qu, url, score, count=100, result_type='recent'):
     domain = url[7:]
     while True:
         try:
+            # TODO: catch ValueError("No JSON object could be decoded"), thrown by Python twitter api.
             result = twapi.search.tweets(q=domain, count=100, result_type='recent')
             tweets = []
             for tweet in result['statuses']:
@@ -41,6 +42,9 @@ def do_search(twapi, qu, url, score, count=100, result_type='recent'):
         except TwitterHTTPError as e:
             print 'Error: ', e.e.code
             time.sleep(300)
+        except ValueError as e:
+            print 'Error: ', e
+            return
 
 
 def search_for_tweets(scores, fname=__data__ + '/tweets.json'):
