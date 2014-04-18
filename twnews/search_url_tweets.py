@@ -44,6 +44,7 @@ def do_search(twapi, qu, url, score, count=100, result_type='recent'):
             time.sleep(300)
         except ValueError as e:
             print 'Error: ', e
+            qu.put(None)
             return
 
 
@@ -60,9 +61,10 @@ def search_for_tweets(scores, fname=__data__ + '/tweets.json'):
                 print 'no results after 15 minutes for', url, '. continuing.'
             else:
                 results = qu.get()
-                print 'found', len(results), 'for domain', url
-                for tweet in results:
-                    out.write(json.dumps(tweet) + '\n')
+                if results:
+                    print 'found', len(results), 'for domain', url
+                    for tweet in results:
+                        out.write(json.dumps(tweet) + '\n')
                 time.sleep(2)
 
 
