@@ -1,7 +1,7 @@
 """
 Print users who were found for multiple urls.
 
-user url1 score1 url2 score2 ...
+user average_score_difference url1 score1 url2 score2 ...
 """
 import codecs
 from collections import defaultdict
@@ -36,6 +36,7 @@ def print_urls_by_user(tweets_file=__data__ + '/tweets.json'):
         if len(urls) > 1:
             dist = average_distance([url2score[u] for u in urls])
             print '%s\t%.4f\t%s' % (user, dist, '\t'.join('%s\t%.3f' % (u, url2score[u]) for u in urls))
+    print 'ALL\t', average_distance(url2score.values())
 
 
 if __name__ == '__main__':
