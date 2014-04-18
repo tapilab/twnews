@@ -14,11 +14,14 @@ def print_all(fname=__data__ + '/tweets.json'):
     url2mentions = defaultdict(lambda: Counter())
     url2score = defaultdict(lambda: 0.)
     inf = codecs.open(fname, 'rt', 'utf-8')
+    ids = set()
     for line in inf:
         js = json.loads(line)
         if 'url_query' in js:  # valid line
-            url2mentions[js['url_query']].update([js['user']['screen_name']])
-            url2score[js['url_query']] = float(js['url_score'])
+            if js['id'] not in ids:
+                url2mentions[js['url_query']].update([js['user']['screen_name']])
+                url2score[js['url_query']] = float(js['url_score'])
+                ids.add(js['id'])
     cons_mentions = dict([(url, mention) for url, mention in url2mentions.iteritems() if url2score[url] < 0])
     lib_mentions = dict([(url, mention) for url, mention in url2mentions.iteritems() if url2score[url] > 0])
     print '%25s %s' % ('# urls:', len(url2mentions))
