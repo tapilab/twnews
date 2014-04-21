@@ -18,6 +18,7 @@ import json
 from threading import Thread
 from Queue import Queue
 import time
+import sys
 
 from twitter.api import TwitterHTTPError
 import twutil
@@ -42,8 +43,9 @@ def do_search(twapi, qu, url, score, count=100, result_type='recent'):
         except TwitterHTTPError as e:
             print 'Error: ', e.e.code
             time.sleep(300)
-        except ValueError as e:
-            print 'Error: ', e
+        except:
+            e = sys.exc_info()[0]
+            print 'Exception: ', e
             qu.put(None)
             return
 
