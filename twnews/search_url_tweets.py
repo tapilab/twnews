@@ -20,43 +20,40 @@ from Queue import Queue
 import time
 import sys
 
-from twitter.api import TwitterHTTPError
 import twutil
 
 from . import __data__
 from .balance import load_balance_scores
 
 
-def do_search(twapi, qu, url, score, count=100, result_type='recent'):
+def do_search(qu, url, score, count=100, result_type='recent'):
     domain = url[7:]
     while True:
-        try:
-            # TODO: catch ValueError("No JSON object could be decoded"), thrown by Python twitter api.
-            result = twapi.search.tweets(q=domain, count=100, result_type='recent')
+        # TODO: catch ValueError("No JSON object could be decoded"), thrown by Python twitter api.
+        result = twutil.collect.twapi.request('search/tweets', {'q': domain, 'count': count, 'result_type': 'recent'})
+        if result.status_code == 200:
             tweets = []
-            for tweet in result['statuses']:
+            for tweet in result:
                 tweet['url_query'] = url
                 tweet['url_score'] = score
                 tweets.append(tweet)
             qu.put(tweets)
             return
-        except TwitterHTTPError as e:
-            print 'Error: ', e.e.code
+        elif result.status_code in [88, 130, 420, 429]:
+            print 'Sleeping off error: ', result.text
             time.sleep(300)
-        except:
-            e = sys.exc_info()[0]
-            print 'Exception: ', e
+        else:
+            sys.stderr.write('Error for %s: %s' % (domain, result.text))
             qu.put(None)
             return
 
 
 def search_for_tweets(scores, fname=__data__ + '/tweets.json'):
     out = codecs.open(fname, 'a', 'utf-8')
-    twapi = twutil.api.twapi
     qu = Queue()
     while True:
         for url, score in scores.iteritems():
-            p = Thread(target=do_search, args=(twapi, qu, url, score))
+            p = Thread(target=do_search, args=(qu, url, score))
             p.start()
             p.join(900)
             if p.is_alive():

@@ -25,8 +25,8 @@ def search_users(tweets_file=__data__ + '/tweets.json', users_file=__data__ + '/
             users = [u for u in mentions if mentions[u] <= max_tweets_per_user]
             for user in users:
                 print user
-                tweets = twutil.api.tweets_for_user(user)
-                if tweets:
+                tweets = twutil.collect.tweets_for_user(user)
+                if tweets and len(tweets) > 0:
                     print 'found', len(tweets)
                     js = {'url_query': url, 'url_score': url2score[url], 'screen_name': user,
                           'tweets': tweets}
