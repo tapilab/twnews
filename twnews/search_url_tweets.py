@@ -19,6 +19,7 @@ from threading import Thread
 from Queue import Queue
 import time
 import sys
+import traceback
 
 import twutil
 
@@ -29,22 +30,26 @@ from .balance import load_balance_scores
 def do_search(qu, url, score, count=100, result_type='recent'):
     domain = url[7:]
     while True:
-        # TODO: catch ValueError("No JSON object could be decoded"), thrown by Python twitter api.
-        result = twutil.collect.twapi.request('search/tweets', {'q': domain, 'count': count, 'result_type': 'recent'})
-        if result.status_code == 200:
-            tweets = []
-            for tweet in result:
-                tweet['url_query'] = url
-                tweet['url_score'] = score
-                tweets.append(tweet)
-            qu.put(tweets)
-            return
-        elif result.status_code in [88, 130, 420, 429]:
-            print 'Sleeping off error: ', result.text
-            time.sleep(300)
-        else:
-            sys.stderr.write('Error for %s: %s' % (domain, result.text))
-            qu.put(None)
+        try:
+            result = twutil.collect.twapi.request('search/tweets', {'q': domain, 'count': count, 'result_type': 'recent'})
+            if result.status_code == 200:
+                tweets = []
+                for tweet in result:
+                    tweet['url_query'] = url
+                    tweet['url_score'] = score
+                    tweets.append(tweet)
+                qu.put(tweets)
+                return
+            elif result.status_code in [88, 130, 420, 429]:
+                print 'Sleeping off error: ', result.text
+                time.sleep(300)
+            else:
+                sys.stderr.write('Error for %s: %s' % (domain, result.text))
+                qu.put(None)
+                return
+        except:
+            e = sys.exc_info()
+            sys.stderr.write('skipping error %s\n%s' % (str(e[0]), traceback.format_exc()))
             return
 
 
